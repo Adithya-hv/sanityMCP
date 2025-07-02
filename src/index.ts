@@ -1,6 +1,7 @@
 #!/usr/bin/env node
+import express from 'express'
 import {McpServer} from '@modelcontextprotocol/sdk/server/mcp.js'
-import {StdioServerTransport} from '@modelcontextprotocol/sdk/server/stdio.js'
+import { StreamableHTTPServerTransport} from '@modelcontextprotocol/sdk/server/streamableHttp.js'
 import {registerAllPrompts} from './prompts/register.js'
 import {registerAllResources} from './resources/register.js'
 import {registerAllTools} from './tools/register.js'
@@ -22,11 +23,26 @@ async function initializeServer() {
   return server
 }
 
+const app = express()
+app.use(express.json())
+
 async function main() {
   try {
+    const port =  8123
     const server = await initializeServer()
-    const transport = new StdioServerTransport()
+    const transport = new StreamableHTTPServerTransport({
+      sessionIdGenerator: undefined,
+    })
     await server.connect(transport)
+
+  app.use(express.json());
+
+  app.post('/mcp', (req, res) => transport.handleRequest(req, res, req.body));
+  app.get('/mcp', (req, res) => transport.handleRequest(req, res, req.body));
+
+  app.listen(port, () => {
+    console.log(`MCP server running on port ${port}`);
+  });
   } catch (error) {
     console.error('Fatal error:', error)
     process.exit(1)
