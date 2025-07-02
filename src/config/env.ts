@@ -24,6 +24,8 @@ const CommonEnvSchema = z.object({
     .optional()
     .default(50000)
     .describe('Maximum tool token output'),
+  FRONTEND_URL: z.string().describe('Frontend URL for CORS'),
+
 })
 
 const DefaultSchema = z
@@ -31,6 +33,7 @@ const DefaultSchema = z
     MCP_USER_ROLE: z.enum(['developer', 'editor']),
     SANITY_PROJECT_ID: z.string().describe('Sanity project ID'),
     SANITY_DATASET: z.string().describe('The dataset'),
+    FRONTEND_URL: z.string().describe('Frontend URL for CORS'),
   })
   .merge(CommonEnvSchema)
 

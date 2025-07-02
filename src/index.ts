@@ -7,6 +7,7 @@ import {registerAllResources} from './resources/register.js'
 import {registerAllTools} from './tools/register.js'
 import {env} from './config/env.js'
 import {VERSION} from './config/version.js'
+import cors from 'cors';
 
 const MCP_SERVER_NAME = '@sanity/mcp-server'
 
@@ -23,8 +24,15 @@ async function initializeServer() {
   return server
 }
 
+
+
 const app = express()
 app.use(express.json())
+app.use(
+  cors({
+    origin: env.data?.FRONTEND_URL //frontend dev server
+  })
+);
 
 async function main() {
   try {
