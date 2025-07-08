@@ -36,7 +36,7 @@ app.use(
 
 async function main() {
   try {
-    const port =  8123
+    const port = process.env.PORT || 8123
     const server = await initializeServer()
     const transport = new StreamableHTTPServerTransport({
       sessionIdGenerator: undefined,
